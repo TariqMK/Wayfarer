@@ -1,6 +1,11 @@
-# Wayfarer
+![Wayfarer. Plan the trip. Print the route.](assets/banner.png)
 
 Wayfarer builds trip itineraries on your computer and exports them as posters. Works offline. Sends no data.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/editor-dark.png">
+  <img src="assets/screenshots/editor-light.png" alt="Wayfarer editor with a five-day sample trip: the day list on the left, the route line with each entry, and one entry open for editing" width="840">
+</picture>
 
 ## Download
 
@@ -21,6 +26,11 @@ Wayfarer builds trip itineraries on your computer and exports them as posters. W
 **Note:** Windows needs the Microsoft Edge WebView2 Runtime. Windows 11 includes it. Linux needs GTK 3 and WebKit2GTK 4.1.
 
 ## Plan a trip
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/trips-dark.png">
+  <img src="assets/screenshots/trips-light.png" alt="The Trips screen with three sample trips, each with its route strip, dates and number of days" width="840">
+</picture>
 
 1. Select **New trip**.
 2. Enter the **Trip title**, **Subtitle** and **Trip notes**.
@@ -58,6 +68,11 @@ Each type has its own line style on the route:
 
 ## Export a trip
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/poster-route-dark.png">
+  <img src="assets/screenshots/poster-route-light.png" alt="Preview of a sample trip in the Route line poster style" width="840">
+</picture>
+
 1. Select **Preview** to see the poster.
 2. Select **Export**.
 3. Set **Format**: **PDF**, **Image** or **Text**.
@@ -76,6 +91,16 @@ Each type has its own line style on the route:
 - **Text** gives a plain text file. **Copy** puts the same text on the clipboard.
 
 The poster style you select in **Preview** is saved with the trip.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/poster-survey-dark.png">
+  <img src="assets/screenshots/poster-survey-light.png" alt="Preview of a sample trip in the Survey sheet poster style: a contour map header and days in two columns" width="840">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/poster-tickets-dark.png">
+  <img src="assets/screenshots/poster-tickets-light.png" alt="Preview of a sample trip in the Ticket stack poster style: each entry as a ticket" width="840">
+</picture>
 
 ## Check for updates
 
@@ -149,6 +174,25 @@ venv\Scripts\pyinstaller --noconfirm Wayfarer.spec
 ```
 
 The build is in `dist/`.
+
+## Update the Screenshots
+
+The README images come from the real app with made-up sample trips. The scripts need Windows.
+
+1. Install the tools: `venv\Scripts\pip install websocket-client PySide6 Pillow fonttools brotli`
+2. Retake the screenshots:
+
+   ```bash
+   venv\Scripts\python assets/make_screenshots.py
+   ```
+
+3. Rebuild the icon, banner and social card after a change to `assets/icon/wayfarer.svg` or the tagline:
+
+   ```bash
+   venv\Scripts\python assets/make_assets.py
+   ```
+
+**Note:** The screenshot script uses a temporary data folder. Your own trips do not load.
 
 ## Creating a Release
 

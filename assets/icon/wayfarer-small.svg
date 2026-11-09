@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Wayfarer icon for 16 to 32 px: the master with a larger tile and thicker strokes. -->
+  <rect x="32" y="32" width="960" height="960" rx="200" fill="#19191b"/>
+  <path d="M290 280 H604 A116 116 0 0 1 604 512 H420 A116 116 0 0 0 420 744 H734" fill="none" stroke="#ededed" stroke-width="104" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="290" cy="280" r="104" fill="#ededed"/>
+  <circle cx="734" cy="744" r="112" fill="#19191b" stroke="#e0b15f" stroke-width="80"/>
+</svg>

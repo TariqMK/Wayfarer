@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Wayfarer master icon: a route that turns back on itself, from a start dot to an amber stop. -->
+  <rect x="64" y="64" width="896" height="896" rx="200" fill="#19191b" stroke="#2c2c2f" stroke-width="8"/>
+  <path d="M300 300 H588 A106 106 0 0 1 588 512 H436 A106 106 0 0 0 436 724 H724" fill="none" stroke="#ededed" stroke-width="64" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="300" cy="300" r="76" fill="#ededed"/>
+  <circle cx="724" cy="724" r="84" fill="#19191b" stroke="#e0b15f" stroke-width="52"/>
+</svg>

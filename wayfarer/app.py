@@ -1,6 +1,7 @@
 """Opens the app window and gives the UI its Python API through pywebview's bridge. There is no web server of ours."""
 
 import base64
+import sys
 import threading
 import webbrowser
 from pathlib import Path
@@ -11,6 +12,8 @@ from wayfarer import export, update_check
 from wayfarer.storage import DATA_FOLDER, TripNameError, TripStore, data_dir, is_writable, slugify
 
 UI_INDEX = Path(__file__).parent / "ui" / "index.html"
+# Window and taskbar icon. Windows reads .ico; Linux reads .png. macOS uses the app bundle's icon.
+WINDOW_ICON = Path(__file__).parent / "ui" / ("icon.ico" if sys.platform == "win32" else "icon.png")
 FILE_TYPES = {
     "txt": "Text file (*.txt)",
     "png": "PNG image (*.png)",
@@ -156,4 +159,4 @@ def main() -> None:
     # Keep the web view's working files with the app's data too. Without a path, Windows puts them in the temp folder.
     # If the folder can't be written, the app still opens and the UI tells the user to move it.
     browser_files = root / "webview"
-    webview.start(storage_path=str(browser_files) if is_writable(browser_files) else None)
+    webview.start(storage_path=str(browser_files) if is_writable(browser_files) else None, icon=str(WINDOW_ICON))

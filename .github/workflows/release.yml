@@ -129,6 +129,8 @@ jobs:
             macOS)
               find dist/Wayfarer.app -name index.html | grep -q .
               find dist/Wayfarer.app -name html2canvas.min.js | grep -q .
+              test -s dist/Wayfarer.app/Contents/Resources/wayfarer.icns
+              grep -q wayfarer.icns dist/Wayfarer.app/Contents/Info.plist
               ditto -c -k --keepParent dist/Wayfarer.app "out/$name.zip"
               ;;
             Linux)

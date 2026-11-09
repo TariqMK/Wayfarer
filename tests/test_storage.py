@@ -42,12 +42,12 @@ def test_non_latin_title_stays_readable():
 
 def test_trip_from_the_old_app_loads_and_lists(store):
     store.dir.mkdir(parents=True)
-    old = {"title": "Switzerland", "days": [{"date": "2026-08-24", "slots": {"morning": [{"type": "train"}]}}]}
-    (store.dir / "Switzerland.json").write_text(json.dumps(old), encoding="utf-8")
+    old = {"title": "Sample trip", "days": [{"date": "2000-01-01", "slots": {"morning": [{"type": "train"}]}}]}
+    (store.dir / "Sample_trip.json").write_text(json.dumps(old), encoding="utf-8")
     summary = store.list()[0]
-    assert summary["filename"] == "Switzerland.json"
+    assert summary["filename"] == "Sample_trip.json"
     assert summary["modes"] == ["train"]
-    assert store.load("Switzerland.json")["title"] == "Switzerland"
+    assert store.load("Sample_trip.json")["title"] == "Sample trip"
 
 
 @pytest.mark.parametrize("name", ["../evil.json", "..\\evil.json", "C:evil.json", ".json", "..json", "a.txt", "", None])

@@ -1,0 +1,52 @@
+Meta/
+
+# Personal data: trips and exports stored next to the app
+WayfarerData/
+
+# AI tools
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+.agents/
+.codex/
+.gemini/
+GEMINI.md
+.cursor/
+.cursorrules
+.cursorignore
+.windsurf/
+.windsurfrules
+.codeium/
+.continue/
+.aider*
+.clinerules
+.cline/
+.roo/
+.roomodes
+.kiro/
+.junie/
+.amazonq/
+.specstory/
+.github/copilot-instructions.md
+.github/instructions/
+.github/prompts/
+.mcp.json
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Build output
+build/
+dist/
+
+# OS clutter
+Thumbs.db
+desktop.ini
+.DS_Store

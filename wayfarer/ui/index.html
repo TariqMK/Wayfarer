@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- Wayfarer's single window. Everything it loads is bundled; the content policy blocks any other connection. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; script-src 'self'; connect-src 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wayfarer</title>
+<link rel="stylesheet" href="vendor/fonts.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="app"></div>
+<div id="overlay"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<button id="version" class="version" type="button" title="Check for updates" aria-label="Version" aria-description="Check GitHub for a newer release."></button>
+<div id="export-host" aria-hidden="true"></div>
+<script src="vendor/html2canvas.min.js"></script>
+<script src="routes.js"></script>
+<script src="posters.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+# Builds Wayfarer for Windows, macOS and Linux, then creates a draft or public GitHub release. Run it by hand from main.
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: Draft or public release
+        type: choice
+        options: [draft, public]
+        default: draft
+      bump:
+        description: Version increase
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+# Queue runs without cancelling, so two releases can never pick the same version.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.14"
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install -e ".[dev]"
+      - run: ruff check wayfarer tests
+      - run: pytest
+
+  version:
+    needs: test
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # Read-only tokens can't see draft releases, so drafts would be skipped.
+    outputs:
+      tag: ${{ steps.next.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: next
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            git tag --list
+            gh release list --limit 1000 --json tagName --jq '.[].tagName'
+          } > tags.txt
+          tag="$(bash .github/scripts/next_version.sh "${{ inputs.bump }}" < tags.txt)"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Next version: $tag"
+
+  build:
+    needs: version
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - os: windows-2025
+            target: windows-x64
+          - os: macos-15
+            target: macos-arm64
+          - os: ubuntu-24.04
+            target: linux-x64
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      TAG: ${{ needs.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Check the macOS runner is Apple Silicon
+        if: runner.os == 'macOS'
+        run: test "$(uname -m)" = "arm64"
+
+      - name: Install Linux GUI packages
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgirepository-2.0-dev libcairo2-dev pkg-config gir1.2-gtk-3.0 gir1.2-webkit2-4.1
+
+      - name: Install dependencies
+        run: |
+          pip install ".[dev]"
+          if [ "$RUNNER_OS" = "Linux" ]; then pip install PyGObject pycairo; fi
+
+      - name: Check the GUI toolkit is available
+        run: |
+          python -c "import webview"
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            python -c "import gi; gi.require_version('Gtk', '3.0'); gi.require_version('WebKit2', '4.1')"
+          fi
+
+      - name: Apply the version on this runner only
+        run: |
+          version="${TAG#v}"
+          printf '"""The app version, set by the release build."""\n\n__version__ = "%s"\n' "$version" > wayfarer/_version.py
+
+      - name: Build
+        run: pyinstaller --noconfirm Wayfarer.spec
+
+      - name: Check the UI is inside the build, then package it
+        run: |
+          mkdir out
+          name="Wayfarer-${TAG}-${{ matrix.target }}"
+          case "$RUNNER_OS" in
+            Windows)
+              pyi-archive_viewer -l -r dist/Wayfarer.exe | grep -E 'wayfarer.+ui.+index\.html'
+              pyi-archive_viewer -l -r dist/Wayfarer.exe | grep -E 'html2canvas\.min\.js'
+              cp dist/Wayfarer.exe "out/$name.exe"
+              ;;
+            macOS)
+              find dist/Wayfarer.app -name index.html | grep -q .
+              find dist/Wayfarer.app -name html2canvas.min.js | grep -q .
+              ditto -c -k --keepParent dist/Wayfarer.app "out/$name.zip"
+              ;;
+            Linux)
+              pyi-archive_viewer -l -r dist/Wayfarer | grep -E 'wayfarer.+ui.+index\.html'
+              pyi-archive_viewer -l -r dist/Wayfarer | grep -E 'html2canvas\.min\.js'
+              tar -czf "out/$name.tar.gz" -C dist Wayfarer
+              ;;
+          esac
+          test -n "$(ls -A out)"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: out/*
+          if-no-files-found: error
+
+  release:
+    needs: [version, build]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ needs.version.outputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create the tag on the commit that was built
+        run: gh api "repos/${{ github.repository }}/git/refs" -f "ref=refs/tags/$TAG" -f "sha=$GITHUB_SHA"
+
+      - name: Create the release
+        run: |
+          flags=()
+          if [ "${{ inputs.release_type }}" = "draft" ]; then flags+=(--draft); fi
+          gh release create "$TAG" artifacts/* \
+            --repo "${{ github.repository }}" \
+            --verify-tag \
+            --title "Wayfarer $TAG" \
+            --generate-notes \
+            "${flags[@]}"

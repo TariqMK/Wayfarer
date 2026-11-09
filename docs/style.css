@@ -1,0 +1,149 @@
+/* Wayfarer product page styles: the app's dark palette, IBM Plex type, hairlines and surface steps. */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f10;--s1:#141415;--s2:#19191b;--s3:#232325;
+  --hair:rgba(237,237,237,.09);--hair2:rgba(237,237,237,.16);
+  --tx1:#ededed;--tx2:#a8a8ad;--tx3:#8c8c92;--amber:#e0b15f;--on-amber:#1a1408;
+  --f-sans:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;--f-mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  --e:cubic-bezier(.22,1,.36,1);
+  color-scheme:dark;
+}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{background:var(--bg);color:var(--tx1);font:16px/26px var(--f-sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+code{font:14px var(--f-mono);color:var(--tx1)}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+
+/* Navigation */
+.nav{position:sticky;top:0;z-index:10;background:rgba(15,15,16,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+.nav-in{height:60px;display:flex;align-items:center;gap:32px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:16px}
+.nav-links{display:flex;gap:24px;margin-left:auto;font-size:14px;color:var(--tx2)}
+.nav-links a{transition:color .15s var(--e)}
+.nav-links a:hover{color:var(--tx1)}
+
+/* Buttons */
+.s-btn{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 20px;border-radius:10px;font-size:15px;font-weight:500;transition:background-color .15s var(--e),color .15s var(--e),transform .1s var(--e);white-space:nowrap}
+.s-btn:active{transform:scale(.98)}
+.s-btn.primary{background:var(--tx1);color:var(--bg)}
+.s-btn.primary:hover{background:#fff}
+.s-btn.ghost{color:var(--tx1);box-shadow:inset 0 0 0 1px var(--hair2)}
+.s-btn.ghost:hover{background:var(--s2)}
+.s-btn.small{height:32px;padding:0 12px;border-radius:8px;font-size:13px;background:var(--s3);box-shadow:inset 0 0 0 1px var(--hair)}
+.s-btn.small:hover{background:#2c2c2f}
+
+/* Hero */
+.hero{position:relative;padding-top:96px;overflow:hidden;border-bottom:1px solid var(--hair)}
+.motif{position:absolute;inset:0;width:100%;height:100%;color:rgba(237,237,237,.06);pointer-events:none}
+.hero-text{position:relative;text-align:center}
+h1{font-size:72px;line-height:76px;font-weight:500;letter-spacing:-.025em}
+.lede{max-width:600px;margin:24px auto 0;color:var(--tx2);font-size:18px;line-height:28px}
+.actions{display:flex;gap:12px;justify-content:center;margin-top:32px}
+.meta{margin-top:20px;font:13px/20px var(--f-mono);color:var(--tx3)}
+.window{position:relative;margin:64px auto 0;max-width:1080px;border-radius:14px 14px 0 0;border:1px solid var(--hair2);border-bottom:0;background:var(--s1);overflow:hidden;box-shadow:0 -1px 0 var(--hair) inset}
+.titlebar{height:32px;display:grid;place-items:center;font:12px var(--f-mono);color:var(--tx3);background:var(--bg);border-bottom:1px solid var(--hair)}
+
+/* The app preview: real app classes from app/app.css, inside data-theme="dark". */
+.app-win{height:560px;display:flex;flex-direction:column;background:var(--page);color:var(--t1);font:14px/20px var(--sans);text-align:left;overflow:hidden}
+.app-win svg,.poster svg,.legend svg{display:block;flex:none}
+.app-win .ic,.poster .ic{color:var(--t2)}
+.app-win .grow{flex:1}
+.app-win .ver{font:12px/16px var(--mono);color:var(--t3)}
+.app-win .body{flex:1;min-height:0}
+.app-win .scroll,.app-win .side{overflow:hidden}
+.app-win .scroll{flex:1;min-width:0;min-height:0}
+.app-win button,.app-win input,.app-win textarea,.app-win select{font:inherit;color:inherit}
+.app-win button{background:none;border:0}
+.app-win textarea{resize:none}
+.app-win .btn,.app-win .add,.app-win .dayjump{cursor:default}
+.app-win .in.is-focus{border-color:var(--accent)}
+.app-win .caret::after{content:"";display:inline-block;width:1px;height:14px;margin-left:1px;background:var(--t1);vertical-align:-2px}
+.app-win .btn.p.pressed{opacity:.85}
+.app-win .grid .wide{grid-column:1/-1}
+.app-win .lbl-static{font-size:18px;line-height:24px;font-weight:500}
+
+/* Sections */
+.section{padding:112px 0;border-bottom:1px solid var(--hair)}
+.eyebrow{display:flex;align-items:center;gap:12px;font:13px var(--f-mono);color:var(--tx3);margin-bottom:24px}
+.eyebrow svg{display:block}
+h2{font-size:44px;line-height:52px;font-weight:500;letter-spacing:-.02em}
+.section-sub{margin-top:16px;max-width:620px;color:var(--tx2);font-size:17px;line-height:28px}
+h3{font-size:17px;line-height:24px;font-weight:600}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px}
+.cols3 p{margin-top:8px;color:var(--tx2);font-size:15px;line-height:24px}
+
+/* Feature panels */
+.panel{background:var(--s1);border:1px solid var(--hair);border-radius:16px;padding:24px;min-width:0}
+.panel>p,.panel-head p{margin-top:4px;color:var(--tx2);font-size:14px;line-height:22px}
+.panel.wide{margin-top:48px}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.s-seg{display:inline-flex;background:var(--s3);border-radius:10px;padding:2px;gap:2px}
+.s-seg button{height:32px;padding:0 12px;border-radius:8px;font-size:13px;color:var(--tx2);transition:background-color .15s var(--e),color .15s var(--e);white-space:nowrap}
+.s-seg button:hover{color:var(--tx1)}
+.s-seg button[aria-pressed=true]{background:var(--s1);color:var(--tx1);box-shadow:inset 0 0 0 1px var(--hair2)}
+.poster-stage{margin-top:24px;border-radius:12px;background:var(--bg);border:1px solid var(--hair);height:640px;overflow:hidden;position:relative}
+.poster-stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:96px;background:linear-gradient(rgba(15,15,16,0),var(--bg));pointer-events:none}
+.poster-scale{padding:32px 0;transform-origin:top center}
+.poster-stage.pan{overflow-x:auto;overflow-y:hidden}
+.poster-stage.pan::after{display:none}
+.poster-stage.pan .poster-scale{padding-right:16px;box-sizing:content-box}
+.panels2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.legend{margin-top:20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px;color:var(--t2);font-size:14px}
+.legend span{display:flex;align-items:center;gap:12px;height:32px;min-width:0}
+.textout{margin-top:20px;height:288px;overflow:hidden;padding:16px;border-radius:10px;background:var(--bg);border:1px solid var(--hair);font:13px/20px var(--f-mono);color:var(--tx2);white-space:pre;-webkit-mask-image:linear-gradient(#000 70%,transparent)}
+.grid-all{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:64px;border-top:1px solid var(--hair);border-left:1px solid var(--hair)}
+.grid-all>div{padding:24px;border-right:1px solid var(--hair);border-bottom:1px solid var(--hair);min-width:0}
+.grid-all h4{font-size:15px;line-height:22px;font-weight:600}
+.grid-all p{margin-top:6px;color:var(--tx2);font-size:14px;line-height:22px}
+
+/* Download */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:48px}
+.dl{display:block;background:var(--s1);border:1px solid var(--hair);border-radius:16px;padding:24px;transition:background-color .15s var(--e),border-color .15s var(--e);min-width:0}
+.dl:hover{background:var(--s2)}
+.dl.mine{border-color:var(--amber)}
+.dl .file{display:flex;justify-content:space-between;gap:8px;margin-top:4px;font:13px/20px var(--f-mono);color:var(--tx3)}
+.dl p:last-child{margin-top:16px;color:var(--tx2);font-size:14px;line-height:22px}
+.fine{margin-top:24px;color:var(--tx3);font-size:14px;line-height:22px}
+.fine a{color:var(--tx2);text-decoration:underline;text-underline-offset:3px}
+
+/* Footer */
+.foot-site{padding:40px 0 56px}
+.foot-in{display:flex;align-items:center;gap:24px;flex-wrap:wrap;color:var(--tx3);font-size:14px}
+.foot-in p{flex:1;min-width:200px}
+.foot-in nav{display:flex;gap:20px}
+.foot-in nav a:hover{color:var(--tx1)}
+
+/* Entrance: the window rises once on load. */
+@media (prefers-reduced-motion:no-preference){
+  .window{animation:rise .7s var(--e) .1s both}
+  @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+}
+
+@media (max-width:960px){
+  .grid-all{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cols3{grid-template-columns:minmax(0,1fr);gap:32px}
+  .panels2,.cards{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:720px){
+  .wrap{padding:0 16px}
+  .nav-links{display:none}
+  .nav-in{justify-content:space-between}
+  .hero{padding-top:56px}
+  h1{font-size:44px;line-height:48px}
+  .lede{font-size:16px;line-height:26px}
+  .actions{flex-direction:column;align-items:stretch}
+  .window{margin-top:40px}
+  .app-win{height:480px}
+  .app-win .side,.app-win .bar .seg,.app-win .bar [data-hide-sm],.app-win .ent .sub,.app-win .ver,.app-win .state{display:none}
+  .app-win .d1main{padding:16px 12px 24px}
+  .app-win .grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .app-win .card .foot .btn.q{display:none}
+  .section{padding:72px 0}
+  h2{font-size:32px;line-height:40px}
+  .poster-stage{height:520px}
+  .legend{grid-template-columns:minmax(0,1fr)}
+  .grid-all{grid-template-columns:minmax(0,1fr)}
+}

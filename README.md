@@ -194,6 +194,8 @@ The README images come from the real app with made-up sample trips. The scripts 
 
 **Note:** The screenshot script uses a temporary data folder. Your own trips do not load.
 
+**Note:** `make_assets.py` also refreshes the copies in `docs/` that the product page uses: the icon, the social card, the poster code and its styles, the fonts and the sample trip. Run it after you change the posters or `app.css`, then check the page.
+
 ## Creating a Release
 
 1. Open **Actions** > **Release** on GitHub.

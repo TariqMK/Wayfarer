@@ -8,6 +8,8 @@ Writes:
   wayfarer/ui/icon.png        256 px copy for the app window on Linux
   assets/banner.png           README banner, 1280 x 320 px at 2x
   assets/social-card.png      GitHub social preview, 1280 x 640 px
+  docs/ copies                the site's icon, touch icon and social card, plus docs/app/: the app's poster code,
+                              its colour and poster CSS, its fonts, and the sample trip with its text export
 
 Sizes of 32 px and smaller use wayfarer-small.svg. Everything else uses wayfarer.svg.
 
@@ -18,6 +20,7 @@ Run from the project root (needs PySide6 and Pillow, which the app itself does n
 
 import argparse
 import io
+import json
 import shutil
 import sys
 from pathlib import Path
@@ -210,9 +213,64 @@ def make_social_card(guides: Path | None = None) -> bool:
     return inside
 
 
+def css_section(css: str, start: str, end: str) -> str:
+    """Return app.css from the comment `/* start */` up to the comment `/* end */`."""
+    a, b = css.index(f"/* {start} */"), css.index(f"/* {end} */")
+    return css[a:b]
+
+
+def make_site_copies() -> None:
+    """Copy what the GitHub Pages site needs into docs/, so the site draws posters with the app's own code."""
+    docs, ui = ROOT / "docs", ROOT / "wayfarer" / "ui"
+    app_dir = docs / "app"
+    (app_dir / "fonts").mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(MASTER, docs / "icon.svg")
+    shutil.copyfile(ROOT / "assets" / "social-card.png", docs / "social-card.png")
+    to_pil(render_svg(180)).save(docs / "apple-touch-icon.png")
+    (docs / ".nojekyll").touch()
+    for name in ("routes.js", "posters.js"):
+        shutil.copyfile(ui / name, app_dir / name)
+
+    # The app's colour tokens, header controls, editor and posters. The site scopes them with data-theme.
+    css = (ui / "app.css").read_text(encoding="utf-8")
+    tokens = "".join(line + "\n" for line in css.splitlines() if line.startswith(("[data-theme=", "  --")))
+    root = css.splitlines()[2] + "\n"  # :root{--ease;--mono;--sans;--display}
+    parts = [css_section(css, "Header", "Trips (home)"), css_section(css, "Editor", "Dialogs")]
+    (app_dir / "app.css").write_text(
+        "/* Copied from wayfarer/ui/app.css by assets/make_assets.py. Do not edit here. */\n" + root + tokens + "".join(parts),
+        encoding="utf-8",
+    )
+
+    # Latin subsets only: the site shows English sample text.
+    fonts_css = (ui / "vendor" / "fonts.css").read_text(encoding="utf-8").splitlines()
+    keep = [line for line in fonts_css if line.startswith("@font-face") and "-latin-ext-" not in line]
+    for line in keep:
+        name = line.split("url(fonts/")[1].split(")")[0]
+        shutil.copyfile(ui / "vendor" / "fonts" / name, app_dir / "fonts" / name)
+    (app_dir / "fonts.css").write_text(
+        "/* Fonts copied from the app (Fontsource, SIL Open Font License). Written by assets/make_assets.py. */\n"
+        + "\n".join(keep)
+        + "\n",
+        encoding="utf-8",
+    )
+
+    # The sample trip from the screenshot script, and its text export from the app's own exporter.
+    sys.path[:0] = [str(ROOT), str(ROOT / "assets")]
+    from make_screenshots import MAIN_TRIP
+
+    from wayfarer.export import build_text
+
+    (app_dir / "sample.js").write_text(
+        "// The made-up sample trip from assets/make_screenshots.py, and its text export. Written by assets/make_assets.py.\n"
+        f"const SAMPLE_TRIP = {json.dumps(MAIN_TRIP, ensure_ascii=False)};\n"
+        f"const SAMPLE_TEXT = {json.dumps(build_text(MAIN_TRIP), ensure_ascii=False)};\n",
+        encoding="utf-8",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build the Wayfarer brand images. With no parts, builds all.")
-    parser.add_argument("parts", nargs="*", choices=["icon", "banner", "card"], help="Build only these parts.")
+    parser.add_argument("parts", nargs="*", choices=["icon", "banner", "card", "site"], help="Build only these parts.")
     parser.add_argument("--guides", type=Path, help="Also write a social card copy with the safe area drawn on.")
     args = parser.parse_args()
     only, guides = set(args.parts), args.guides
@@ -227,6 +285,9 @@ def main() -> int:
         if not make_social_card(guides):
             return 1
         print("Wrote assets/social-card.png")
+    if not only or "site" in only:
+        make_site_copies()
+        print("Wrote copies in docs/")
     return 0
 
 

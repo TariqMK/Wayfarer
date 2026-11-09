@@ -1,0 +1,168 @@
+<!doctype html>
+<!-- Wayfarer product page: what the app does, a live editor and poster preview, and the downloads. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wayfarer · Plan the trip. Print the route.</title>
+<meta name="description" content="Wayfarer is a free desktop app that plans trip itineraries day by day and exports them as posters, PDFs or plain text. Works offline. Sends no data.">
+<meta name="theme-color" content="#0f0f10">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wayfarer">
+<meta property="og:description" content="Plan the trip. Print the route. A free, offline desktop app for trip itineraries and posters.">
+<meta property="og:url" content="https://tariqmk.github.io/Wayfarer/">
+<meta property="og:image" content="https://tariqmk.github.io/Wayfarer/social-card.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wayfarer">
+<meta name="twitter:description" content="Plan the trip. Print the route. A free, offline desktop app for trip itineraries and posters.">
+<meta name="twitter:image" content="https://tariqmk.github.io/Wayfarer/social-card.png">
+<link rel="stylesheet" href="app/fonts.css">
+<link rel="stylesheet" href="app/app.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="#top"><img src="icon.svg" alt="" width="24" height="24">Wayfarer</a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#features">Features</a>
+      <a href="#download">Download</a>
+      <a href="https://github.com/TariqMK/Wayfarer">GitHub</a>
+    </nav>
+    <a class="s-btn small" href="#download">Download</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <svg class="motif" viewBox="0 0 1440 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <path d="M-40 150 H860 A140 140 0 0 1 860 430 H580 A140 140 0 0 0 580 710 H1500" fill="none" stroke="currentColor" stroke-width="1"/>
+      <path d="M-40 182 H860 A108 108 0 0 1 860 398 H580 A172 172 0 0 0 580 742 H1500" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="8 6"/>
+      <circle cx="580" cy="710" r="7" fill="none" stroke="currentColor"/>
+    </svg>
+    <div class="wrap hero-text">
+      <h1>Plan the trip.<br>Print the route.</h1>
+      <p class="lede">Wayfarer builds trip itineraries on your computer, day by day, and exports them as posters, PDFs or plain text. It works offline and sends no data.</p>
+      <div class="actions">
+        <a class="s-btn primary" id="hero-download" href="https://github.com/TariqMK/Wayfarer/releases/latest">Download</a>
+        <a class="s-btn ghost" href="https://github.com/TariqMK/Wayfarer">View source</a>
+      </div>
+      <p class="meta"><span id="hero-version">Latest release</span> · Free · Windows, macOS, Linux · Offline · No tracking</p>
+    </div>
+    <div class="wrap">
+      <div class="window" aria-label="Preview of the Wayfarer editor with a sample trip" role="img">
+        <div class="titlebar">Wayfarer</div>
+        <div class="app-win" data-theme="dark" id="editor"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section principles">
+    <div class="wrap">
+      <div class="eyebrow" data-line="walk">Principles</div>
+      <div class="cols3">
+        <div><h3>Stays on your computer</h3><p>Works offline. No accounts, no telemetry, nothing sent. The one connection is the version check, to GitHub, when you select it.</p></div>
+        <div><h3>One folder, fully portable</h3><p>Trips and exports live in <code>WayfarerData</code> next to the app. Copy the app and the folder together to move or back up everything.</p></div>
+        <div><h3>No installer</h3><p>Download one file and open it. Wayfarer keeps none of your data in your user profile.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="wrap">
+      <div class="eyebrow" data-line="train">Features</div>
+      <h2>One trip, three posters</h2>
+      <p class="section-sub">Plan once in the editor. Choose a poster style and a light or dark appearance when you export.</p>
+
+      <div class="panel wide">
+        <div class="panel-head">
+          <div><h3>Poster styles</h3><p>The sample trip, drawn by Wayfarer's own poster code</p></div>
+          <div class="controls">
+            <div class="s-seg" role="group" aria-label="Poster style" id="style-seg">
+              <button data-style="route" aria-pressed="true">Route line</button><button data-style="survey" aria-pressed="false">Survey sheet</button><button data-style="tickets" aria-pressed="false">Ticket stack</button>
+            </div>
+            <div class="s-seg" role="group" aria-label="Appearance" id="theme-seg">
+              <button data-theme-value="light" aria-pressed="true">Light</button><button data-theme-value="dark" aria-pressed="false">Dark</button>
+            </div>
+          </div>
+        </div>
+        <div class="poster-stage" id="poster-stage"><div class="poster-scale" id="poster-scale"></div></div>
+      </div>
+
+      <div class="panels2">
+        <div class="panel">
+          <h3>Every type has its own line</h3>
+          <p>Eleven entry types. Each one draws its own line on the route, like a rail map.</p>
+          <div class="legend app-scope" data-theme="dark" id="legend"></div>
+        </div>
+        <div class="panel">
+          <h3>Plain text too</h3>
+          <p>Export a text file, or select Copy to put the same itinerary on the clipboard.</p>
+          <pre class="textout" id="textout"></pre>
+        </div>
+      </div>
+
+      <div class="grid-all">
+        <div><h4>Morning, afternoon, evening</h4><p>Each day has three parts. Add entries to each.</p></div>
+        <div><h4>Dates that follow on</h4><p>Each new day gets the date after the previous day.</p></div>
+        <div><h4>Drag to reorder</h4><p>Move an entry to another part of the day, or drag a whole day.</p></div>
+        <div><h4>Works without a mouse</h4><p>Move up and Move down on entries, arrows on days, Ctrl+S to save.</p></div>
+        <div><h4>Overnight entries</h4><p>Mark a night train or flight that spans one night or more.</p></div>
+        <div><h4>Undo a deletion</h4><p>A deleted entry or day can come back for 6 seconds.</p></div>
+        <div><h4>PDF in A4 pages</h4><p>Long trips continue on more pages, cut between rows.</p></div>
+        <div><h4>One PNG image</h4><p>The whole poster as a single picture to share.</p></div>
+        <div><h4>Light and dark</h4><p>Choose the appearance per export. Use Light to print.</p></div>
+        <div><h4>Unsaved changes</h4><p>Wayfarer asks before it closes a trip you have not saved.</p></div>
+        <div><h4>Check for updates</h4><p>Select the version number. Nothing downloads or installs itself.</p></div>
+        <div><h4>Plain JSON files</h4><p>One file per trip, in a folder you can open and copy.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="download">
+    <div class="wrap">
+      <div class="eyebrow" data-line="plane">Download</div>
+      <h2 id="download-title">Download Wayfarer</h2>
+      <p class="section-sub" id="download-sub">Free. One file per computer. Put it in a folder you can change, for example in Documents.</p>
+      <div class="cards">
+        <a class="dl" data-os="windows" href="https://github.com/TariqMK/Wayfarer/releases/latest">
+          <h3>Windows</h3><p class="file"><span>x64 · .exe</span><span class="size"></span></p>
+          <p>Builds are unsigned. If Windows shows a warning, select More info, then Run anyway. Needs WebView2, which Windows 11 includes.</p>
+        </a>
+        <a class="dl" data-os="macos" href="https://github.com/TariqMK/Wayfarer/releases/latest">
+          <h3>macOS</h3><p class="file"><span>Apple Silicon · .zip</span><span class="size"></span></p>
+          <p>Move Wayfarer.app out of Downloads first. Approve it once under System Settings, Privacy &amp; Security.</p>
+        </a>
+        <a class="dl" data-os="linux" href="https://github.com/TariqMK/Wayfarer/releases/latest">
+          <h3>Linux</h3><p class="file"><span>x64 · .tar.gz</span><span class="size"></span></p>
+          <p>Needs GTK 3 and WebKit2GTK 4.1. Unpack it and open the Wayfarer file.</p>
+        </a>
+      </div>
+      <p class="fine">Do not put Wayfarer in Program Files or another protected folder. It can't save trips there. To build from source, follow <a href="https://github.com/TariqMK/Wayfarer#run-from-source">Run from source</a> in the README.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot-site">
+  <div class="wrap foot-in">
+    <a class="logo" href="#top"><img src="icon.svg" alt="" width="20" height="20">Wayfarer</a>
+    <p>Your trips stay in the WayfarerData folder next to the app.</p>
+    <nav aria-label="Project links">
+      <a href="https://github.com/TariqMK/Wayfarer">GitHub</a>
+      <a href="https://github.com/TariqMK/Wayfarer/releases">Releases</a>
+      <a href="https://github.com/TariqMK/Wayfarer/issues">Issues</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="app/routes.js"></script>
+<script src="app/posters.js"></script>
+<script src="app/sample.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

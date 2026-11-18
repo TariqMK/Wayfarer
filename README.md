@@ -1,6 +1,8 @@
 ![Wayfarer. Plan the trip. Print the route.](assets/banner.png)
 
-Wayfarer builds trip itineraries on your computer and exports them as posters. Works offline. Sends no data.
+Wayfarer builds trip itineraries on your computer, day by day, and exports them as posters, PDFs or plain text. Works offline. Sends no data.
+
+Website: [tariqmk.github.io/Wayfarer](https://tariqmk.github.io/Wayfarer/)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/editor-dark.png">
@@ -19,9 +21,11 @@ Wayfarer builds trip itineraries on your computer and exports them as posters. W
 
 **Caution:** Do not put Wayfarer in `Program Files` or another protected folder. It can't save trips there.
 
-**Note:** Builds are unsigned. Windows can show a warning the first time. Select **More info**, then **Run anyway**.
+**Note:** The Windows and macOS builds are unsigned.
+- Windows can show a warning the first time. Select **More info**, then **Run anyway**.
+- On macOS, move `Wayfarer.app` out of Downloads before you open it. macOS can otherwise run it from a temporary read-only location. Approve the app the first time under System Settings > Privacy & Security.
 
-**Note:** On macOS, approve the app the first time under System Settings > Privacy & Security. Move `Wayfarer.app` out of Downloads before you open it. macOS can otherwise run it from a temporary read-only location.
+**Note:** The macOS build is for Apple Silicon only.
 
 **Note:** Windows needs the Microsoft Edge WebView2 Runtime. Windows 11 includes it. Linux needs GTK 3 and WebKit2GTK 4.1.
 
@@ -35,11 +39,14 @@ Wayfarer builds trip itineraries on your computer and exports them as posters. W
 1. Select **New trip**.
 2. Enter the **Trip title**, **Subtitle** and **Trip notes**.
 3. Select **Add day**. Each new day gets the date after the previous day.
-4. Select **Add entry** in **Morning**, **Afternoon** or **Evening**.
-5. Set the **Type**, **From**, **To**, **Duration** and **Notes**.
-6. Select **Overnight** for an entry that continues into the next day.
-7. Select **Done**.
-8. Select **Save**, or press Ctrl+S.
+4. Optional: change the date of the day, or enter a label for it. A day with no label shows as **Day 1**, **Day 2** and so on.
+5. Select **Add entry** in **Morning**, **Afternoon** or **Evening**.
+6. Set the **Type**, **From**, **To**, **Duration** and **Notes**.
+7. Select **Overnight** for an entry that continues into the next day. Set the number of nights in **Spans**.
+8. Select **Done**.
+9. Select **Save**, or press Ctrl+S (Cmd+S on macOS).
+
+To go to a day in a long trip, select it in the day list. To hide the entries of a day, select **Collapse** on that day.
 
 Each type has its own line style on the route:
 
@@ -66,6 +73,13 @@ Each type has its own line style on the route:
 
 **Delete entry** and **Remove day** show **Undo** for 6 seconds. Deleted items are not removed from the saved file until you select **Save**.
 
+### Delete a trip
+
+**Caution:** This deletes the trip file. You can't undo it.
+
+1. On the Trips screen, select **Delete** on the trip.
+2. Select **Delete** to confirm.
+
 ## Export a trip
 
 <picture>
@@ -81,7 +95,7 @@ Each type has its own line style on the route:
    - **Survey sheet**: a map sheet with contour lines, in two columns.
    - **Ticket stack**: each entry as a ticket.
 5. Set **Appearance**: **Light** or **Dark**.
-6. Select **Export**. The Save dialog opens in `WayfarerData\exports`.
+6. Select **Export**. The Save dialog opens in `WayfarerData/exports`.
 7. Select **Save**.
 
 **Caution:** Dark posters use a lot of ink. Use **Light** to print.
@@ -109,6 +123,13 @@ The poster style you select in **Preview** is saved with the trip.
 
 Wayfarer does not download or install anything.
 
+## Move or back up your data
+
+1. Close Wayfarer.
+2. Copy or move the `WayfarerData` folder together with the app.
+
+**Caution:** If you move only the app, it starts with an empty `WayfarerData` folder. If you delete the folder, you delete your trips.
+
 ## Privacy
 
 - Wayfarer works offline. All fonts, icons and libraries are inside the app.
@@ -122,79 +143,81 @@ Wayfarer does not download or install anything.
 - **Note:** On macOS, the system's web view can keep its own working files in your Library folder. The app can't move these files. Your trips and exports are not in them.
 - Wayfarer makes one network connection, and only when you ask. When you select the version number, the app asks GitHub (api.github.com) for the latest release. It sends nothing else and nothing is downloaded.
 
-## Move or back up your data
-
-1. Close Wayfarer.
-2. Copy or move the `WayfarerData` folder together with the app.
-
-**Caution:** If you move only the app, it starts with an empty `WayfarerData` folder. If you delete the folder, you delete your trips.
-
 ## Limitations
 
 - There is no general undo. **Undo** covers only the last deleted entry or day.
 - **Image** and **PDF** exports are pictures of the poster. You cannot select the text in them.
 - A saved trip has one file. Wayfarer does not sync trips between computers.
+- There is no build for Intel Macs.
 
 ## Run from source
 
 Requires Python 3.11 or later.
 
-```bash
-python -m venv venv
-```
+1. Create a virtual environment:
 
-```bash
-venv\Scripts\python -m pip install -e ".[dev]"
-```
+   ```bash
+   python3 -m venv venv
+   ```
 
-```bash
-venv\Scripts\python -m wayfarer
-```
+2. Install Wayfarer and the development tools:
 
-On macOS and Linux, use `venv/bin/python`. On Linux, also install `PyGObject` and the GTK packages listed in the note in [Download](#download).
+   ```bash
+   venv/bin/python -m pip install -e ".[dev]"
+   ```
+
+3. Start the app:
+
+   ```bash
+   venv/bin/python -m wayfarer
+   ```
+
+**Note:** On Windows, use `python` in step 1 and `venv\Scripts\python` in place of `venv/bin/python`. On Linux, also install `PyGObject` and the GTK packages listed in [Download](#download).
 
 From source, the data folder is `WayfarerData` in the project root. Git ignores it.
 
 ### Run the tests
 
 ```bash
-venv\Scripts\python -m pytest
+venv/bin/python -m pytest
 ```
 
 ### Check the code
 
 ```bash
-venv\Scripts\python -m ruff check wayfarer tests
+venv/bin/python -m ruff check wayfarer tests
 ```
 
 ### Build the app
 
 ```bash
-venv\Scripts\pyinstaller --noconfirm Wayfarer.spec
+venv/bin/pyinstaller --noconfirm Wayfarer.spec
 ```
 
-The build is in `dist/`.
+The build is in `dist/`. PyInstaller builds only for the system it runs on.
 
-## Update the Screenshots
+## Update the Screenshots and Site
 
-The README images come from the real app with made-up sample trips. The scripts need Windows.
+The README images and the product site use the real app with made-up sample trips. Never use real trips.
 
-1. Install the tools: `venv\Scripts\pip install websocket-client PySide6 Pillow fonttools brotli`
-2. Retake the screenshots:
+1. Install the tools: `pip install websocket-client PySide6 Pillow fonttools brotli`
+2. On Windows, retake the screenshots. The screenshot script needs WebView2.
 
    ```bash
    venv\Scripts\python assets/make_screenshots.py
    ```
 
-3. Rebuild the icon, banner and social card after a change to `assets/icon/wayfarer.svg` or the tagline:
+3. Rebuild the icon, banner, social card and site copies:
 
    ```bash
-   venv\Scripts\python assets/make_assets.py
+   venv/bin/python assets/make_assets.py
    ```
+
+4. If the social card changed, upload `assets/social-card.png` again under **Settings** > **General** > **Social preview** on GitHub.
 
 **Note:** The screenshot script uses a temporary data folder. Your own trips do not load.
 
-**Note:** `make_assets.py` also refreshes the copies in `docs/` that the product page uses: the icon, the social card, the poster code and its styles, the fonts and the sample trip. Run it after you change the posters or `app.css`, then check the page.
+**Note:** `make_assets.py` writes the files in `docs/app/`: the poster code and its styles, the fonts and the sample trip. Do not edit them by hand. Run the script after you change the posters, the route lines or `app.css`, then check the site.
 
 ## Creating a Release
 

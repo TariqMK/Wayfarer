@@ -130,6 +130,16 @@ Wayfarer does not download or install anything.
 
 **Caution:** If you move only the app, it starts with an empty `WayfarerData` folder. If you delete the folder, you delete your trips.
 
+## If Wayfarer does not start
+
+If the Trips screen does not load within 8 seconds, the window shows "Wayfarer could not start."
+
+1. Close the window.
+2. Open Wayfarer again.
+3. If the message comes back, [report a problem on GitHub](https://github.com/TariqMK/Wayfarer/issues/new). Give your Wayfarer version and your operating system. You need a free GitHub account.
+
+**Note:** Wayfarer 1.1.0 opened a blank window on macOS. Download 1.1.1 or later.
+
 ## Privacy
 
 - Wayfarer works offline. All fonts, icons and libraries are inside the app.

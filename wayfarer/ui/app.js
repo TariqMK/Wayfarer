@@ -530,13 +530,28 @@ document.addEventListener("keydown", e => {
 window.addEventListener("resize", placeVersion);
 
 // Start ----------------------------------------------------------------------------------
-async function boot() {
-  S.version = await api().get_version();
-  S.dataProblem = await api().get_data_problem();
-  paintVersion();
-  applyTheme();
-  await loadTrips();
-  document.fonts.ready.then(placeVersion);
+// If the link to Python never arrives or start-up fails, show a message instead of a blank window.
+const START_TIMEOUT_MS = 8000;
+let started = false;
+function showStartFailure() {
+  if (started) return;
+  document.documentElement.dataset.theme = darkQuery.matches ? "dark" : "light";
+  $("#app").innerHTML = `<div class="scroll"><div class="home"><p class="notice" role="alert">Wayfarer could not start. Close the window and open Wayfarer again. If this message comes back, report it at github.com/TariqMK/Wayfarer/issues.</p></div></div>`;
 }
+async function boot() {
+  try {
+    S.version = await api().get_version();
+    S.dataProblem = await api().get_data_problem();
+    paintVersion();
+    applyTheme();
+    await loadTrips();
+    started = true;
+    document.fonts.ready.then(placeVersion);
+  } catch (err) {
+    console.error(err);
+    showStartFailure();
+  }
+}
+setTimeout(showStartFailure, START_TIMEOUT_MS);
 if (window.pywebview && window.pywebview.api) boot();
 else window.addEventListener("pywebviewready", boot, { once: true });

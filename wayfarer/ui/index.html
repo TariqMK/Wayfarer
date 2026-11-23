@@ -1,9 +1,10 @@
 <!doctype html>
-<!-- Wayfarer's single window. Everything it loads is bundled; the content policy blocks any other connection. -->
+<!-- Wayfarer's single window. Everything it loads is bundled; the content policy blocks any other connection.
+     'unsafe-eval' is required: pywebview builds its pywebview.api functions with new Function(). macOS WebKit blocks that without it, and the window stays blank. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; script-src 'self'; connect-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; script-src 'self' 'unsafe-eval'; connect-src 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wayfarer</title>
 <link rel="stylesheet" href="vendor/fonts.css">

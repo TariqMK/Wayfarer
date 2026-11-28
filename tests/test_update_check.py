@@ -2,11 +2,20 @@
 
 import io
 import json
+import ssl
 import urllib.error
 
 import pytest
 
-from wayfarer.update_check import RELEASES_URL, check, evaluate, parse_version, safe_release_url
+from wayfarer.update_check import (
+    RELEASES_URL,
+    check,
+    evaluate,
+    load_system_certificates,
+    parse_version,
+    safe_release_url,
+    ssl_context,
+)
 
 
 class Response(io.BytesIO):
@@ -104,3 +113,48 @@ def test_error_messages(error, message):
 def test_unreadable_answers(body):
     result = check(opener=answer(body), current="1.0.0")
     assert result["detail"] == "GitHub sent an answer Wayfarer can't read. Try again later."
+
+
+# Certificates. A release build's OpenSSL looks where the build machine kept them, which most computers don't have.
+
+
+def trusted_certificate(tmp_path):
+    """Copy one trusted root certificate from this system into a PEM file, so the tests need no network."""
+    certs = ssl.create_default_context().get_ca_certs(binary_form=True)
+    if not certs:
+        pytest.skip("This system has no trusted certificates to copy.")
+    path = tmp_path / "system.pem"
+    path.write_text(ssl.DER_cert_to_PEM_cert(certs[0]), encoding="ascii")
+    return path
+
+
+def test_missing_build_certificates_fall_back_to_the_systems(tmp_path, monkeypatch):
+    # The same state as the v1.1.1 macOS build: the paths OpenSSL was built with don't exist.
+    system = trusted_certificate(tmp_path)
+    monkeypatch.setenv("SSL_CERT_FILE", str(tmp_path / "missing" / "cert.pem"))
+    monkeypatch.setenv("SSL_CERT_DIR", str(tmp_path / "missing" / "certs"))
+    context = ssl_context(candidates=(str(tmp_path / "not-here.pem"), str(system)))
+    assert context.cert_store_stats()["x509_ca"] >= 1
+
+
+def test_first_system_file_that_exists_is_used(tmp_path):
+    system = trusted_certificate(tmp_path)
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    load_system_certificates(context, (str(tmp_path / "not-here.pem"), str(system)))
+    assert context.cert_store_stats()["x509_ca"] == 1
+
+
+def test_working_certificates_are_left_alone(tmp_path):
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    context.load_verify_locations(cafile=str(trusted_certificate(tmp_path)))
+    not_a_certificate = tmp_path / "other.pem"
+    not_a_certificate.write_text("not a certificate", encoding="ascii")
+    load_system_certificates(context, (str(not_a_certificate),))  # Loading this file would raise.
+    assert context.cert_store_stats()["x509_ca"] == 1
+
+
+def test_no_system_file_keeps_the_default_context(tmp_path):
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    load_system_certificates(context, (str(tmp_path / "not-here.pem"),))
+    assert context.cert_store_stats()["x509_ca"] == 0
+    assert context.verify_mode == ssl.CERT_REQUIRED

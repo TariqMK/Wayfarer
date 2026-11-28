@@ -1,7 +1,9 @@
 """Manual update check. Runs only when the user selects the version number, and asks GitHub for the latest release."""
 
 import json
+import os
 import re
+import ssl
 import urllib.error
 import urllib.request
 
@@ -12,6 +14,14 @@ REPO = "TariqMK/Wayfarer"
 API_URL = f"https://api.github.com/repos/{REPO}/releases/latest"
 RELEASES_URL = f"https://github.com/{REPO}/releases"
 TIMEOUT_SECONDS = 10
+# Where systems keep their trusted certificates. A release build's own OpenSSL looks where the build machine kept
+# them, which most computers don't have (macOS, and Linux outside Debian and Ubuntu). Windows uses its own store.
+SYSTEM_CA_FILES = (
+    "/etc/ssl/cert.pem",  # macOS, Arch, Alpine
+    "/etc/ssl/certs/ca-certificates.crt",  # Debian, Ubuntu
+    "/etc/pki/tls/certs/ca-bundle.crt",  # Fedora, RHEL
+    "/etc/ssl/ca-bundle.pem",  # openSUSE
+)
 
 
 def parse_version(text) -> tuple[int, int, int] | None:
@@ -67,7 +77,28 @@ def _error(message: str) -> dict:
     return {"status": "error", "headline": "Check for updates", "detail": message}
 
 
-def check(opener=urllib.request.urlopen, current: str = __version__) -> dict:
+def load_system_certificates(context: ssl.SSLContext, candidates=SYSTEM_CA_FILES) -> None:
+    """If the context trusts no certificates, load the first system certificate file that exists."""
+    if context.cert_store_stats()["x509_ca"]:
+        return
+    for path in candidates:
+        if os.path.isfile(path):
+            context.load_verify_locations(cafile=path)
+            return
+
+
+def ssl_context(candidates=SYSTEM_CA_FILES) -> ssl.SSLContext:
+    """A normal verifying context that also works when the build's own certificate paths are missing."""
+    context = ssl.create_default_context()
+    load_system_certificates(context, candidates)
+    return context
+
+
+def _open(request, timeout):
+    return urllib.request.urlopen(request, timeout=timeout, context=ssl_context())
+
+
+def check(opener=_open, current: str = __version__) -> dict:
     """Send one GET to GitHub and return the result. It sends only the required headers."""
     request = urllib.request.Request(
         API_URL,

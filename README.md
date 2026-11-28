@@ -192,6 +192,16 @@ From source, the data folder is `WayfarerData` in the project root. Git ignores 
 venv/bin/python -m pytest
 ```
 
+### Run the end-to-end check
+
+The check opens the app window with made-up trips in a new temporary folder. It opens, saves, exports and deletes trips, then checks the files on disk. The window closes by itself after about 20 s. Your own trips are not used.
+
+```bash
+venv/bin/python scripts/check_e2e.py
+```
+
+**Note:** Run it on the computer's desktop. It needs a display.
+
 ### Check the code
 
 ```bash
